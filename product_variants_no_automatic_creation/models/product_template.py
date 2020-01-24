@@ -61,6 +61,14 @@ class ProductTemplate(models.Model):
                     not tmpl.categ_id.no_create_variants) or
                     tmpl.no_create_variants == 'no'):
                 super(ProductTemplate, tmpl).create_variant_ids()
+            elif not tmpl.attribute_line_ids:
+                # create new product "alone"
+                for variant_ids in [[]]:
+                    values = {
+                        'product_tmpl_id': tmpl.id,
+                        'attribute_value_ids': [(6, 0, variant_ids)]
+                    }
+                    self.env['product.product'].create(values)
         return True
 
     @api.multi
